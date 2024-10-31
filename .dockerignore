@@ -1,5 +1,6 @@
 Dockerfile
 .vscode/
+.venv/
 .idea
 .gitignore
 LICENSE
