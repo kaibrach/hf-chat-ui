@@ -6,6 +6,19 @@
 			"name": "Run development server",
 			"request": "launch",
 			"type": "node-terminal"
+		},
+		{
+			"type": "chrome",
+			"request": "launch",
+			"name": "Launch Chrome with \"localhost\"",
+			"url": "http://localhost:5173",
+			"webRoot": "${workspaceFolder}"
+		}
+	],
+	"compounds": [
+		{
+			"name": "Both",
+			"configurations": ["Run development server", "Launch Chrome with \"localhost\""]
 		}
 	]
 }
