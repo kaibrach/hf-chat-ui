@@ -88,10 +88,28 @@ export async function updateUser(params: {
 		},
 		"user login"
 	);
-	// if using huggingface as auth provider, check orgs for earl access and amin rights
-	const isAdmin = (env.HF_ORG_ADMIN && orgs?.some((org) => org.sub === env.HF_ORG_ADMIN)) || false;
-	const isEarlyAccess =
-		(env.HF_ORG_EARLY_ACCESS && orgs?.some((org) => org.sub === env.HF_ORG_EARLY_ACCESS)) || false;
+
+	let isAdmin = false;
+	let isEarlyAccess = false;
+
+	if (env.KBR_HF_AUTH_PROVIDER === "true") {
+		// if using huggingface as auth provider, check orgs for earl access and amin rights
+		isAdmin = (env.HF_ORG_ADMIN && orgs?.some((org) => org.sub === env.HF_ORG_ADMIN)) || false;
+		isEarlyAccess =
+			(env.HF_ORG_EARLY_ACCESS && orgs?.some((org) => org.sub === env.HF_ORG_EARLY_ACCESS)) ||
+			false;
+	} else {
+		// Check if userData groups contain the group "admin". If so set isAdmin=true
+
+		isAdmin =
+			!!(
+				userData.groups &&
+				Array.isArray(userData.groups) &&
+				userData.groups.includes(env.KBR_ADMIN_GROUP_NAME)
+			) || false;
+		isEarlyAccess = !!(userData.isEarlyAccess === "true") || false;
+		//logger.debug(userData);
+	}
 
 	logger.debug(
 		{
