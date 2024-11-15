@@ -37,7 +37,7 @@
 	import { useSettingsStore } from "$lib/stores/settings";
 	import type { ToolFront } from "$lib/types/Tool";
 	import ModelSwitch from "./ModelSwitch.svelte";
-
+	import type { PromptExample } from "$lib/server/promptExamples";
 	import { fly } from "svelte/transition";
 	import { cubicInOut } from "svelte/easing";
 
@@ -331,7 +331,7 @@
 							ev.preventDefault();
 							loginModalOpen = true;
 						} else {
-							dispatch("message", ev.detail);
+							dispatch("message", ev.detail.prompt);
 						}
 					}}
 				/>
