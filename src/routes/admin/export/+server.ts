@@ -2,14 +2,12 @@ import { env } from "$env/dynamic/private";
 import { collections } from "$lib/server/database";
 import type { Message } from "$lib/types/Message";
 import { error } from "@sveltejs/kit";
-//import { pathToFileURL } from "node:url";
+import { pathToFileURL } from "node:url";
 import { unlink } from "node:fs/promises";
-//import { uploadFile } from "@huggingface/hub";
+import { uploadFile } from "@huggingface/hub";
 import parquet from "parquetjs";
 import { z } from "zod";
 import { logger } from "$lib/server/logger.js";
-import path from "path";
-import fs from "fs";
 
 // Triger like this:
 // curl -X POST "http://localhost:5173/chat/admin/export" -H "Authorization: Bearer <ADMIN_API_SECRET>" -H "Content-Type: application/json" -d '{"model": "OpenAssistant/oasst-sft-6-llama-30b-xor"}'
@@ -142,8 +140,7 @@ export async function POST({ request }) {
 
 	await writer.close();
 
-	// KBR: TODO: No need to upload to Hugging Face, maybe upload it to somewhere else
-	/* 	logger.info("Uploading", fileName, "to Hugging Face Hub");
+	logger.info("Uploading", fileName, "to Hugging Face Hub");
 
 	await uploadFile({
 		file: pathToFileURL(fileName) as URL,
@@ -154,22 +151,7 @@ export async function POST({ request }) {
 		},
 	});
 
-	logger.info("Upload done"); */
-
-	// copy the file to download folder
-	// TODO: KBR Change the file path, this is only for testing
-	const downloadFolderPath = "/Users/kai/Downloads/Parquet-Export"; // specify the download folder path
-	const downloadFilePath = `${downloadFolderPath}/${path.basename(fileName)}`; // specify the download file path
-
-	logger.info("Copying", fileName, "to", downloadFilePath);
-
-	// create the download folder if it doesn't exist
-	if (!fs.existsSync(downloadFolderPath)) {
-		fs.mkdirSync(downloadFolderPath);
-	}
-
-	// copy the file to the download folder
-	fs.copyFileSync(fileName, downloadFilePath);
+	logger.info("Upload done");
 
 	await unlink(fileName);
 
