@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  synergy:
+    image: synergy:0.3 # Replace with your actual image name
+    #container_name: synergy-app
+    restart: always
+    env_file:
+      - .env.local
+    ports:
+      - "3000:3000"
+    dns:
+      - 8.8.8.8
+    volumes:
+      - synergy:/data
+    networks:
+      - synergy-network
+    depends_on:
+      - mongo-db
+      #- keycloak
+    environment:
+      HF_API_ROOT: ${HF_API_ROOT}
+      HF_TOKEN: ${HF_TOKEN}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      CLOUDFLARE_ACCOUNT_ID: ${CLOUDFLARE_ACCOUNT_ID}
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN}
+      COHERE_API_TOKEN: ${COHERE_API_TOKEN}
+      GOOGLE_GENAI_API_KEY: ${GOOGLE_GENAI_API_KEY}
+      TEXT_EMBEDDING_MODELS: ${TEXT_EMBEDDING_MODELS}
+      TASK_MODEL: ${TASK_MODEL}
+      MODELS: ${MODELS}
+      MONGODB_URL: ${MONGODB_URL}
+      MONGODB_DB_NAME: ${MONGODB_DB_NAME}
+      PUBLIC_APP_NAME: ${PUBLIC_APP_NAME}
+      PUBLIC_APP_DESCRIPTION: ${PUBLIC_APP_DESCRIPTION}
+
+  mongo-db:
+    image: mongo:latest
+    container_name: synergy-mongo-db
+    # environment:
+    #   MONGO_INITDB_ROOT_USERNAME: root
+    #   MONGO_INITDB_ROOT_PASSWORD: example
+    #   MONGO_INITDB_DATABASE: ${MONGODB_DB_NAME}
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - synergy-network
+
+volumes:
+  mongo-data:
+  synergy:
+
+networks:
+  synergy-network:

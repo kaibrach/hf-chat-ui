@@ -37,7 +37,7 @@
 	import { useSettingsStore } from "$lib/stores/settings";
 	import type { ToolFront } from "$lib/types/Tool";
 	import ModelSwitch from "./ModelSwitch.svelte";
-	import type { PromptExample } from "$lib/server/promptExamples";
+
 	import { fly } from "svelte/transition";
 	import { cubicInOut } from "svelte/easing";
 
@@ -51,7 +51,6 @@
 	export let assistant: Assistant | undefined = undefined;
 	export let preprompt: string | undefined = undefined;
 	export let files: File[] = [];
-	export let promptExamples: PromptExample[] = [];
 
 	$: isReadOnly = !models.some((model) => model.id === currentModel.id);
 
@@ -325,13 +324,12 @@
 			{:else if !assistant}
 				<ChatIntroduction
 					{currentModel}
-					{promptExamples}
 					on:message={(ev) => {
 						if ($page.data.loginRequired) {
 							ev.preventDefault();
 							loginModalOpen = true;
 						} else {
-							dispatch("message", ev.detail.prompt);
+							dispatch("message", ev.detail);
 						}
 					}}
 				/>
@@ -528,7 +526,7 @@
 							<CarbonCheckmark class="text-[.6rem] sm:mr-1.5 sm:text-green-600" />
 							<div class="text-green-600 max-sm:hidden">Link copied to clipboard</div>
 						{:else}
-							<CarbonExport class="text-[.6rem] sm:mr-1.5 sm:text-primary-500" />
+							<CarbonExport class="sm:text-primary-500 text-[.6rem] sm:mr-1.5" />
 							<div class="max-sm:hidden">Share this conversation</div>
 						{/if}
 					</button>

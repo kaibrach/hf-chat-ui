@@ -82,6 +82,5 @@
 	{loading}
 	currentModel={findCurrentModel([...data.models, ...data.oldModels], modelId)}
 	models={data.models}
-	promptExamples={data.promptExamples}
 	bind:files
 />

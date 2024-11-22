@@ -31,6 +31,8 @@ RUN npx playwright install --with-deps chromium
 RUN chown -R 1000:1000 /home/user/.npm
 USER user
 
+# copy files including .env.local (kbr: should not be done for security reasons)
+#COPY --chown=1000 .env.local /app/.env.local
 COPY --chown=1000 .env /app/.env
 COPY --chown=1000 entrypoint.sh /app/entrypoint.sh
 COPY --chown=1000 gcp-*.json /app/
@@ -87,8 +89,9 @@ ENV INCLUDE_DB=${INCLUDE_DB}
 ARG APP_BASE=
 # tailwind requires the primary theme to be known at build time so it must be passed as a build arg
 ARG PUBLIC_APP_COLOR=blue
+ARG PUBLIC_COMMIT_SHA=
+ENV PUBLIC_COMMIT_SHA=${PUBLIC_COMMIT_SHA}
 ENV BODY_SIZE_LIMIT=15728640
-
 #import the build & dependencies
 COPY --from=builder --chown=1000 /app/build /app/build
 COPY --from=builder --chown=1000 /app/node_modules /app/node_modules

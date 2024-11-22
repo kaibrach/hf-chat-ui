@@ -97,6 +97,5 @@
 	assistant={data.assistant}
 	{currentModel}
 	models={data.models}
-	promptExamples={data.promptExamples}
 	bind:files
 />

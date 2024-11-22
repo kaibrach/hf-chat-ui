@@ -8,31 +8,14 @@
 	import ModelCardMetadata from "../ModelCardMetadata.svelte";
 	import { base } from "$app/paths";
 	import JSON5 from "json5";
-	import type { PromptExample } from "$lib/server/promptExamples";
-
-	import CarbonImage from "~icons/carbon/image";
-	import CarbonTools from "~icons/carbon/tools";
 
 	export let currentModel: Model;
-	export let promptExamples: PromptExample[];
 
 	const announcementBanners = envPublic.PUBLIC_ANNOUNCEMENT_BANNERS
 		? JSON5.parse(envPublic.PUBLIC_ANNOUNCEMENT_BANNERS)
 		: [];
 
-	const dispatch = createEventDispatcher<{
-		message: {
-			prompt: string;
-			file?: File | string;
-			tool?: string;
-		};
-	}>();
-
-	const prompts = promptExamples
-		.filter((prompt: PromptExample) => prompt?.models?.includes(currentModel.id) ?? true)
-		.filter(Boolean)
-		.sort(() => Math.random() - 0.5)
-		.slice(0, 3) as PromptExample[];
+	const dispatch = createEventDispatcher<{ message: string }>();
 </script>
 
 <div class="my-auto grid gap-8 lg:grid-cols-3">
@@ -90,44 +73,20 @@
 			<ModelCardMetadata variant="dark" model={currentModel} />
 		</div>
 	</div>
-	{#if prompts && prompts.length > 0}
+	{#if currentModel.promptExamples}
 		<div class="lg:col-span-3 lg:mt-6">
-			<p class="mb-3 text-sm text-gray-500 dark:text-gray-400">Examples</p>
+			<p class="mb-3 text-gray-600 dark:text-gray-300">Examples</p>
 			<div class="grid gap-3 lg:grid-cols-3 lg:gap-5">
-				{#each prompts as example}
+				{#each currentModel.promptExamples as example}
 					<button
 						type="button"
-						class="flex w-full max-w-full items-center gap-2 rounded-xl border bg-gray-50 p-3 text-gray-600 hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 max-xl:text-sm xl:p-3.5"
-						class:multimodal={example.type === "multimodal"}
-						class:tool={example.type === "tool"}
-						on:click={() =>
-							dispatch("message", {
-								prompt: example.prompt,
-								file: example?.fileUrl ?? undefined,
-								tool: example?.toolId ?? undefined,
-							})}
+						class="rounded-xl border bg-gray-50 p-3 text-gray-600 hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 max-xl:text-sm xl:p-3.5"
+						on:click={() => dispatch("message", example.prompt)}
 					>
-						{#if example.type === "multimodal"}
-							<CarbonImage class="min-w-6 text-lg text-blue-700 dark:text-blue-500" />
-						{:else if example.type === "tool"}
-							<CarbonTools class="min-w-6 text-lg text-purple-700 dark:text-purple-500" />
-						{/if}
-						<span class="ml-2 flex w-full flex-col items-start">
-							<span class="text-md text-left">{example.title}</span>
-						</span>
+						{example.title}
 					</button>
 				{/each}
 			</div>
-		</div>
-	{/if}
+		</div>{/if}
 	<div class="h-40 sm:h-24" />
 </div>
-
-<style lang="postcss">
-	.multimodal {
-		@apply border-blue-500/20 bg-blue-500/20 hover:bg-blue-500/30;
-	}
-	.tool {
-		@apply border-purple-500/20 bg-purple-500/20 hover:bg-purple-500/30;
-	}
-</style>
