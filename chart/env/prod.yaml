@@ -380,8 +380,8 @@ envVars:
         "linkHref": "https://huggingface.co/chat/models/Qwen/Qwen2.5-Coder-32B-Instruct"
       }
     ]
-  PUBLIC_APP_NAME: "HuggingChat"
-  PUBLIC_APP_ASSETS: "huggingchat"
+  PUBLIC_APP_NAME: "Synergy"
+  PUBLIC_APP_ASSETS: "synergy"
   PUBLIC_APP_COLOR: "yellow"
   PUBLIC_APP_DESCRIPTION: "Making the community's best AI chat models available to everyone."
   PUBLIC_APP_DISCLAIMER_MESSAGE: "Disclaimer: AI is an area of active research with known problems such as biased generation and misinformation. Do not use this application for high-stakes decisions or advice."
